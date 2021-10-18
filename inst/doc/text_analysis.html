@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Taylor Arnold and Michael J Kane" />
+
+
+<title>Text Analysis with the ctrailsgov Package</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="data:text/css,p%20%7B%0Atext%2Dalign%3A%20justify%3B%0Atext%2Djustify%3A%20inter%2Dword%3B%0Afont%2Dsize%3A%2018px%3B%0A%7D%0Ah1%20%7B%20font%2Dsize%3A%2038px%20%7D%0Ah2%20%7B%20font%2Dsize%3A%2030px%20%7D%0Ah3%20%7B%20font%2Dsize%3A%2022px%20%7D%0Ali%20%7B%0Atext%2Dalign%3A%20justify%3B%0Atext%2Djustify%3A%20inter%2Dword%3B%0Afont%2Dsize%3A%2018px%3B%0A%7D%0A%2Esection%20%2EsourceCode%20%7B%0Aborder%2Dradius%3A%2015px%3B%0A%7D%0A%2EsourceCode%20%7B%0Afont%2Dsize%3A%2018px%3B%0A%7D%0Acode%2C%20%2Esection%20pre%20%7B%0Afont%2Dsize%3A%2018px%20%21important%3B%0A%7D%0Aimg%20%7B%0Adisplay%3A%20block%3B%0Amargin%2Dleft%3A%20auto%3B%0Amargin%2Dright%3A%20auto%3B%0Awidth%3A%2080%25%3B%0Aborder%3A%201px%20solid%20black%3B%0A%7D%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Text Analysis with the ctrailsgov Package</h1>
+<h4 class="author">Taylor Arnold and Michael J Kane</h4>
+
+
+
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>To start, we will load the package and the sample dataset. The same code below can be used with the entire dataset, but may be a bit slower.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ctrialsgov)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ctgov_load_sample</span>()</span></code></pre></div>
+</div>
+<div id="keywords-in-context" class="section level2">
+<h2>Keywords in Context</h2>
+<p>The function <code>ctgov_kwic</code> highlights all of the occurances of a term within its context (the few words before and after the term occurs). For example, if we want to show the occurances of the term “bladder” in the titles of the interventional trials we can do this:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">ctgov_query</span>(<span class="at">study_type =</span> <span class="st">&quot;Interventional&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ctgov_kwic</span>(<span class="st">&quot;bladder&quot;</span>, z<span class="sc">$</span>brief_title)</span></code></pre></div>
+<pre><code>## ible Local Advanved |Bladder| Cancer
+##  of Sulforaphane in |Bladder| Cancer Chemoprevent
+##       Comparison of |Bladder| Filling vs. Non-Fil
+## tment of Overactive |Bladder|/Urge Incontinence
+## in the Detection of |Bladder| Cancer in the Surve
+## A-F Betafood on Gall|bladder| and Liver Function.
+## Non-Muscle Invasive |Bladder| Cancer
+## iopathic Overactive |Bladder| With Urinary Incont
+## tion for Overactive |Bladder|
+## anced or Metastatic |Bladder| Cancer
+##      Autologous Neo-|Bladder| Construct in Non-Ne
+## urogenic Overactive |Bladder| and Urge Predominan
+##  AMG 706 on the Gall|bladder| in Advanced Solid T
+## Men With Overactive |Bladder|.</code></pre>
+<p>The function also has an option to include a title along with each occurance that is printed alongside each row. Here we will print the NCT id for each trial:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">ctgov_query</span>(<span class="at">study_type =</span> <span class="st">&quot;Interventional&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ctgov_kwic</span>(<span class="st">&quot;bladder&quot;</span>, z<span class="sc">$</span>brief_title, z<span class="sc">$</span>nct_id)</span></code></pre></div>
+<pre><code>## [NCT04553939] ible Local Advanved |Bladder| Cancer
+## [NCT03517995]  of Sulforaphane in |Bladder| Cancer Chemoprevent
+## [NCT04210479]       Comparison of |Bladder| Filling vs. Non-Fil
+## [NCT03535857] tment of Overactive |Bladder|/Urge Incontinence
+## [NCT02560584] in the Detection of |Bladder| Cancer in the Surve
+## [NCT01981343] A-F Betafood on Gall|bladder| and Liver Function.
+## [NCT01625260] Non-Muscle Invasive |Bladder| Cancer
+## [NCT00910845] iopathic Overactive |Bladder| With Urinary Incont
+## [NCT00912314] tion for Overactive |Bladder|
+## [NCT00635726] anced or Metastatic |Bladder| Cancer
+## [NCT00594139]      Autologous Neo-|Bladder| Construct in Non-Ne
+## [NCT00594139] urogenic Overactive |Bladder| and Urge Predominan
+## [NCT00448786]  AMG 706 on the Gall|bladder| in Advanced Solid T
+## [NCT00282932] Men With Overactive |Bladder|.</code></pre>
+<p>There are some other options that can be used to change the way that the output is displayed. The default (shown above) prints the results out using the <code>cat</code> function. Other options return the results as a character vector of data frame, which are useful for further post-processing. There is also a flag <code>use_color</code> that prints the term in color rather than with pipes; it looks great in a terminal or RStudio but does not display correctly when knit to HTML.</p>
+</div>
+<div id="tf-idf" class="section level2">
+<h2>TF-IDF</h2>
+<p>We can use a technique called term frequence-inverse document frequency (TF-IDF) to determine the most important words in a collection of of text fields. To implement this in R we will use the <code>ctgov_tfidf</code> function:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> ctrialsgov<span class="sc">::</span><span class="fu">ctgov_query</span>()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>tfidf <span class="ot">&lt;-</span> <span class="fu">ctgov_tfidf</span>(z<span class="sc">$</span>description)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tfidf, <span class="at">n =</span> <span class="dv">30</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 3,074 × 2
+##      doc terms                                               
+##    &lt;int&gt; &lt;chr&gt;                                               
+##  1     0 aortix|heightened|aki|providing|abdominal           
+##  2     1 pollution|ms|air|viral|france                       
+##  3     2 fmt|diversity|microbiota|weight|gut                 
+##  4     3 nerves|landmarks|bony|guidance|knee                 
+##  5     4 antihistamines|h1|inadequately|spontaneous|suffering
+##  6     5 bandage|seroma|drain|categorical|variables          
+##  7     6 vagal|mediterranean|nerve|diet|depression           
+##  8     7 veterans|peer|whole|steps|structured                
+##  9     8 suicidal|ideation|telehealth|engagement|counseling  
+## 10     9 bct|ce|breast|structures|cancers                    
+## 11    10 athletes|pathways|exercise|biomarkers|strenuous     
+## 12    11 acetylsalicylic|vessels|artery|affects|acid         
+## 13    12 mhealth|90|monitoring|organ|impact                  
+## 14    13 cascade|sugar|glucose|sensor|doctors                
+## 15    14 variant|b1351|cov2|sars|b16172                      
+## 16    15 scenario|uncertainties|oncological|relating|real    
+## 17    16 itch|epigenetic|mechanisms|chronic|antagonists      
+## 18    17 9vhpv|1526|hiv|living|uninfected                    
+## 19    18 dengue|fever|permeability|five|vascular             
+## 20    19 influenza|icu|aspergillosis|eortc|pathogen          
+## 21    20 cannabigerol|cbg|thc|appetite|stimulating           
+## 22    21 antibiotics|decide|how|parent|prescribed            
+## 23    22 counseling|education|behavior|behavioral|his        
+## 24    23 intrauterine|adhesiolysis|leaf|film|named           
+## 25    24 purifiers|cardiopulmonary|indicators|students|air   
+## 26    25 donepezil|french|alzheimers|efficiency|authorities  
+## 27    26 avelumab|checkpoint|breast|immune|aspirin           
+## 28    27 dbs|ps|expectations|pd|preoperative                 
+## 29    28 brentuximab|vedotin|classic|nivolumab|checkpoint    
+## 30    29 wl|calorie|aas|ba|crc                               
+## # … with 3,044 more rows</code></pre>
+<p>The default takes the lower case version of the terms, but (particularly with acronyms) it may be better to preserve the capitalization of the terms. Here is how we can do that in this example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tfidf <span class="ot">&lt;-</span> <span class="fu">ctgov_tfidf</span>(z<span class="sc">$</span>description, <span class="at">tolower =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tfidf, <span class="at">n =</span> <span class="dv">30</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 3,074 × 2
+##      doc terms                                              
+##    &lt;int&gt; &lt;chr&gt;                                              
+##  1     0 heightened|AKI|providing|abdominal|System          
+##  2     1 pollution|MS|air|viral|France                      
+##  3     2 FMT|diversity|microbiota|weight|gut                
+##  4     3 nerves|landmarks|bony|guidance|knee                
+##  5     4 H1|inadequately|spontaneous|suffering|comparison   
+##  6     5 seroma|drain|categorical|variables|regression      
+##  7     6 Mediterranean|vagal|nerve|diet|depression          
+##  8     7 Whole|Veterans|package|Health|mental               
+##  9     8 suicidal|ideation|telehealth|engagement|counseling 
+## 10     9 BCT|CE|breast|structures|cancers                   
+## 11    10 athletes|pathways|exercise|biomarkers|strenuous    
+## 12    11 Acetylsalicylic|Acid|vessels|artery|affects        
+## 13    12 mHealth|90|monitoring|organ|impact                 
+## 14    13 sugar|glucose|sensor|doctors|venous                
+## 15    14 variant|CoV2|SARS|Beta|vaccine                     
+## 16    15 scenario|uncertainties|oncological|relating|real   
+## 17    16 itch|epigenetic|mechanisms|chronic|Similarly       
+## 18    17 9vHPV|1526|HIV|living|uninfected                   
+## 19    18 dengue|fever|permeability|five|vascular            
+## 20    19 influenza|ICU|EORTC|aspergillosis|pathogen         
+## 21    20 THC|appetite|stimulating|subjective|analgesic      
+## 22    21 antibiotics|decide|how|prescribed|pneumonia        
+## 23    22 counseling|education|behavioral|his|behavior       
+## 24    23 intrauterine|film|named|adhesion|barrier           
+## 25    24 purifiers|cardiopulmonary|air|students|indicators  
+## 26    25 French|Alzheimers|efficiency|controversy|reimbursed
+## 27    26 checkpoint|Immune|breast|immune|aspirin            
+## 28    27 DBS|PS|expectations|PD|preoperative                
+## 29    28 vedotin|brentuximab|nivolumab|classic|checkpoint   
+## 30    29 WL|calorie|AAs|BA|CRC                              
+## # … with 3,044 more rows</code></pre>
+<p>We can also refine the results by including fewer rare terms. The argument <code>min_df</code> specifies the minimal proportion of documents that must contain a term for it to be returned as a keyword; the upper bound can also be specified with the argument <code>max_df</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>tfidf <span class="ot">&lt;-</span> <span class="fu">ctgov_tfidf</span>(z<span class="sc">$</span>description, <span class="at">min_df =</span> <span class="fl">0.02</span>, <span class="at">max_df =</span> <span class="fl">0.2</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tfidf, <span class="at">n =</span> <span class="dv">30</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 3,072 × 2
+##      doc terms                                                
+##    &lt;int&gt; &lt;chr&gt;                                                
+##  1     0 injury|support|cardiovascular|performance|feasibility
+##  2     1 impact|care|health|risk|better                       
+##  3     2 weight|loss|body|10|least                            
+##  4     3 but|these|compare|two|which                          
+##  5     4 adult|tolerability|chronic|placebo|participants      
+##  6     5 outcome|multiple|analysis|evaluated|performed        
+##  7     6 depression|function|assess|efficacy                  
+##  8     7 support|health|level|care|primary                    
+##  9     8 improved|support|high|intervention|care              
+## 10     9 breast|out|being|performed|if                        
+## 11    10 exercise|events|associated|compared|inflammation     
+## 12    11 condition|heart|information|blood|when               
+## 13    12 impact|days|objective|outcome|secondary              
+## 14    13 levels|diabetes|blood|level|device                   
+## 15    14 vaccine|novel|include|label|open                     
+## 16    15 about|new|studies|free|benefit                       
+## 17    16 chronic|examine|testing|disorder|while               
+## 18    17 vaccine|women|among|those|dose                       
+## 19    18 death|treat|syndrome|pilot|evaluation                
+## 20    19 pulmonary|incidence|observational|multi|identify     
+## 21    20 alone|combination|assess|effects                     
+## 22    21 how|often|children|if|not                            
+## 23    22 diseases|chronic|follow|it|changes                   
+## 24    23 novel|aims|controlled|randomized|efficacy            
+## 25    24 explore|aims|changes|function|health                 
+## 26    25 non|disease|cognitive|approach|currently             
+## 27    26 breast|immune|approximately|called|cancer            
+## 28    27 postoperative|improvement|result|brain|specific      
+## 29    28 treated|cells|may|cancer|ability                     
+## 30    29 prevention|interventions|weight|its|no               
+## # … with 3,042 more rows</code></pre>
+<p>Any number of text fields can be passed to the <code>ctgov_tokens</code> function; all of the fields for a specific trial are pasted together and treated a single block of text.</p>
+</div>
+<div id="document-similarity" class="section level2">
+<h2>Document Similarity</h2>
+<p>Finally, the package also provides a function for producing similarity scores based on the text fields of the studies. Here, we will produce a similarity matrix based on the description field of Interventional, Industry-sponsored, Phase 2 trials.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">ctgov_query</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">study_type =</span> <span class="st">&quot;Interventional&quot;</span>, <span class="at">sponsor_type =</span> <span class="st">&quot;Industry&quot;</span>, <span class="at">phase =</span> <span class="st">&quot;Phase 2&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="fu">ctgov_text_similarity</span>(z<span class="sc">$</span>description, <span class="at">min_df =</span> <span class="dv">0</span>, <span class="at">max_df =</span> <span class="fl">0.1</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(scores)</span></code></pre></div>
+<pre><code>## [1] 147 147</code></pre>
+<p>The returned value is a square matrix with one row and one colum for each clinical trial in the set. We can use these scores to find studies that are particularly close to one another in the words used within their descriptions. Here for example we can see five studies that use similar terms in their descriptions:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="fu">order</span>(scores[,<span class="dv">100</span>], <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>z<span class="sc">$</span>brief_title[index]</span></code></pre></div>
+<pre><code>## [1] &quot;AL-38583 Ophthalmic Solution for Allergic Conjunctivitis Associated Inflammation&quot; 
+## [2] &quot;Safety and Efficacy of BRM421 for Dry Eye Syndrome&quot;                               
+## [3] &quot;Phosphorylcholine PC-mAb Effects in Subjects With Elevated Lipoprotein a&quot;         
+## [4] &quot;Safety, Clinical Tolerability and Immunogenicity of Increasing Doses of gpASIT+TM&quot;
+## [5] &quot;Phase 2 Clinical Trial of CartiLife in the United States&quot;</code></pre>
+<p>Further post-processing can be done with the similarity scores, such as spectral clustering and dimensionality reduction.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

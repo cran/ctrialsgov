@@ -1,0 +1,115 @@
+---
+title: "Text Analysis with the ctrailsgov Package"
+author: Taylor Arnold and Michael J Kane
+output:
+  rmarkdown::html_vignette:
+    css: "note-style.css"
+  vignette: >
+    %\VignetteIndexEntry{Text Analysis with the ctrailsgov Package}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+---
+
+## Setup
+
+To start, we will load the package and the sample dataset. The same code below
+can be used with the entire dataset, but may be a bit slower.
+
+```{r, message=FALSE}
+library(ctrialsgov)
+library(dplyr)
+ctgov_load_sample()
+```
+
+## Keywords in Context
+
+The function `ctgov_kwic` highlights all of the occurances of a term within
+its context (the few words before and after the term occurs). For example, if
+we want to show the occurances of the term "bladder" in the titles of the
+interventional trials we can do this:
+
+```{r}
+z <- ctgov_query(study_type = "Interventional")
+ctgov_kwic("bladder", z$brief_title)
+```
+
+The function also has an option to include a title along with each occurance
+that is printed alongside each row. Here we will print the NCT id for each
+trial:
+
+```{r}
+z <- ctgov_query(study_type = "Interventional")
+ctgov_kwic("bladder", z$brief_title, z$nct_id)
+```
+
+There are some other options that can be used to change the way that the
+output is displayed. The default (shown above) prints the results out using
+the `cat` function. Other options return the results as a character vector of
+data frame, which are useful for further post-processing. There is also a
+flag `use_color` that prints the term in color rather than with pipes; it looks
+great in a terminal or RStudio but does not display correctly when knit to
+HTML.
+
+## TF-IDF
+
+We can use a technique called term frequence-inverse document frequency (TF-IDF)
+to determine the most important words in a collection of of text fields. To
+implement this in R we will use the `ctgov_tfidf` function:
+
+```{r}
+z <- ctrialsgov::ctgov_query()
+tfidf <- ctgov_tfidf(z$description)
+print(tfidf, n = 30)
+```
+
+The default takes the lower case version of the terms, but (particularly with
+acronyms) it may be better to preserve the capitalization of the terms. Here is
+how we can do that in this example:
+
+```{r}
+tfidf <- ctgov_tfidf(z$description, tolower = FALSE)
+print(tfidf, n = 30)
+```
+
+We can also refine the results by including fewer rare terms. The argument
+`min_df` specifies the minimal proportion of documents that must contain a term
+for it to be returned as a keyword; the upper bound can also be specified
+with the argument `max_df`.
+
+```{r}
+tfidf <- ctgov_tfidf(z$description, min_df = 0.02, max_df = 0.2)
+print(tfidf, n = 30)
+```
+
+Any number of text fields can be passed to the `ctgov_tokens` function; all of
+the fields for a specific trial are pasted together and treated a single block
+of text.
+
+## Document Similarity
+
+Finally, the package also provides a function for producing similarity scores
+based on the text fields of the studies. Here, we will produce a similarity
+matrix based on the description field of Interventional, Industry-sponsored,
+Phase 2 trials.
+
+```{r}
+z <- ctgov_query(
+  study_type = "Interventional", sponsor_type = "Industry", phase = "Phase 2"
+)
+scores <- ctgov_text_similarity(z$description, min_df = 0, max_df = 0.1)
+dim(scores)
+```
+
+The returned value is a square matrix with one row and one colum for each
+clinical trial in the set. We can use these scores to find studies that are
+particularly close to one another in the words used within their descriptions.
+Here for example we can see five studies that use similar terms in their
+descriptions:
+
+```{r}
+index <- order(scores[,100], decreasing = TRUE)[1:5]
+z$brief_title[index]
+```
+
+Further post-processing can be done with the similarity scores, such as spectral
+clustering and dimensionality reduction.
