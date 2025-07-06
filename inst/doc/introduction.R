@@ -1,7 +1,7 @@
-## ---- message=FALSE-----------------------------------------------------------
+## ----message=FALSE------------------------------------------------------------
 library(ctrialsgov)
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  library(DBI)
 #  library(RPostgreSQL)
 #  
@@ -9,7 +9,7 @@ library(ctrialsgov)
 #  con <- DBI::dbConnect(drv, dbname="aact")
 #  ctgov_create_data(con)
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  ctgov_load_cache()
 
 ## -----------------------------------------------------------------------------
@@ -46,20 +46,11 @@ ctgov_query(
   date_range = c("2019-01-01", "2020-02-01")
 )
 
-## ---- message=FALSE-----------------------------------------------------------
+## ----message=FALSE------------------------------------------------------------
 library(dplyr)
 
 ctgov_query() %>%
   ctgov_query(description_kw = "cancer") %>%
   ctgov_query(enrollment_range = c(100, 200)) %>%
   ctgov_query(date_range = c("2019-01-01", "2020-02-01"))
-
-## -----------------------------------------------------------------------------
-ctgov_query(
-  description_kw = "cancer",
-  enrollment_range = c(100, 200),
-  date_range = c("2019-01-01", "2020-02-01")
-) %>%
-  ctgov_plot_timeline() +
-    ggplot2::theme_minimal()
 

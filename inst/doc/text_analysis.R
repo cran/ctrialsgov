@@ -1,4 +1,4 @@
-## ---- message=FALSE-----------------------------------------------------------
+## ----message=FALSE------------------------------------------------------------
 library(ctrialsgov)
 library(dplyr)
 ctgov_load_sample()
